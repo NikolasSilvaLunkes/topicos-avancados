@@ -39,12 +39,12 @@ public class Usuario extends DefaultModel implements UserDetails {
 
     @Override
     public String getPassword() {
-        return Encrypter.decrypt(this.senha);
+        return this.senha != null ? Encrypter.decrypt(this.senha) : null;
     }
 
     @Override
     public String getUsername() {
-        return Encrypter.decrypt(this.nome);
+        return this.nome;
     }
 
     @Override
