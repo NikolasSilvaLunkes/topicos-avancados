@@ -4,7 +4,9 @@ import com.nikolas.webservicenikolas.generic.classes.DefaultModel;
 import com.nikolas.webservicenikolas.utils.Encrypter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.checkerframework.common.aliasing.qual.Unique;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,8 +25,11 @@ public class Usuario extends DefaultModel implements UserDetails {
 
 
     @Setter
+    @NotNull
+    @Unique
     private String nome;
 
+    @NotNull
     @Column(nullable = false)
     private String senha;
 
