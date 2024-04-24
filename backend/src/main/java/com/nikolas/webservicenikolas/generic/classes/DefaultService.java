@@ -2,16 +2,22 @@ package com.nikolas.webservicenikolas.generic.classes;
 
 import com.nikolas.webservicenikolas.generic.interfaces.IDefaultRepository;
 import com.nikolas.webservicenikolas.generic.interfaces.IDefaultService;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-public class DefaultService<T extends DefaultModel> implements IDefaultService<T> {
+@Service
+public abstract class DefaultService<T extends DefaultModel, I extends IDefaultRepository<T>> implements IDefaultService<T> {
 
+    @Getter
     @Autowired
-    IDefaultRepository<T> repository;
+    I repository;
+
+
 
     @Override
     public List<T> retornaTodos() {

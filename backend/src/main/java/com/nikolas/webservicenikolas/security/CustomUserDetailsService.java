@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Optional;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
@@ -27,9 +26,8 @@ public class CustomUserDetailsService implements UserDetailsService {
             if (usuario == null) {
                 throw new UsernameNotFoundException("User not found");
             }
-
-            return User.withUsername(user.getUsername())
-                    .password(user.getPassword())
+            return User.withUsername(user.getNome())
+                    .password(user.getPassword()) // use getPassword instead of getHashedSenha
                     .authorities(new ArrayList<>()) // Set authorities if there are any
                     .build();
         } catch (Exception e) {

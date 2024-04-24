@@ -42,6 +42,10 @@ public class Usuario extends DefaultModel implements UserDetails {
         return Encrypter.decrypt(this.senha);
     }
 
+    public String getHashedSenha() {
+        return this.senha;
+    }
+
     @Override
     public String getPassword() {
         return this.senha != null ? Encrypter.decrypt(this.senha) : null;

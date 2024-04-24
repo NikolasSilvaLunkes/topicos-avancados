@@ -1,12 +1,27 @@
 package com.nikolas.webservicenikolas.security;
 
 public class JwtAuthenticationResponse {
-    private String accessToken;
+    private String token;
     private String tokenType = "Bearer";
 
-    public JwtAuthenticationResponse(String accessToken) {
-        this.accessToken = accessToken;
+    public JwtAuthenticationResponse(String token) {
+        this.token = token;
     }
 
     // getters and setters
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getTokenType() {
+        return tokenType;
+    }
+
+    public void setTokenType(String tokenType) {
+        this.tokenType = tokenType;
+    }
 }

@@ -1,6 +1,7 @@
 package com.nikolas.webservicenikolas.generic.classes;
 
 import com.nikolas.webservicenikolas.generic.interfaces.IDefaultController;
+import com.nikolas.webservicenikolas.generic.interfaces.IDefaultRepository;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @AllArgsConstructor
-public abstract class DefaultController<T extends DefaultModel, S extends DefaultService<T>> implements IDefaultController<T, S> {
+public abstract class DefaultController<T extends DefaultModel, I extends IDefaultRepository<T>, S extends DefaultService<T, I>> implements IDefaultController<T, S> {
 
     @Getter
     @Setter
