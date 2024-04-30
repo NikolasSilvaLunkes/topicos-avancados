@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 import java.util.Arrays;
 
@@ -72,7 +73,9 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/auth/**").permitAll()
+                        auth.requestMatchers(RegexRequestMatcher.regexMatcher("/auth/[A-Za-z0-9]+")).permitAll()
+                                .requestMatchers("/usuario").hasAnyAuthority("ROLE_ADMIN")
+                                .requestMatchers(RegexRequestMatcher.regexMatcher("/usuario/[A-Za-z0-9]+")).hasAuthority("ROLE_ADMIN")
                                 .anyRequest().hasAnyAuthority("ROLE_USER")
                 );
         return http.build();

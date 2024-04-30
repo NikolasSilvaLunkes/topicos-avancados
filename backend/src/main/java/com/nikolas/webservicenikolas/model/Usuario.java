@@ -1,5 +1,6 @@
 package com.nikolas.webservicenikolas.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nikolas.webservicenikolas.generic.classes.DefaultModel;
 import com.nikolas.webservicenikolas.utils.Encrypter;
 import jakarta.persistence.Column;
@@ -11,8 +12,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 
 @Getter
@@ -51,6 +54,7 @@ public class Usuario extends DefaultModel implements UserDetails {
         return this.senha != null ? Encrypter.decrypt(this.senha) : null;
     }
 
+
     @Override
     public String getUsername() {
         return this.nome;
@@ -79,7 +83,13 @@ public class Usuario extends DefaultModel implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // For simplicity, let's assume all users have a single role "ROLE_USER"
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+
+        if (this.nome.equals("admin")) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        }
+
+        return authorities;
     }
 }
