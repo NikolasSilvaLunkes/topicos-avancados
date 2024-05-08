@@ -7,6 +7,9 @@ import ThemeRegistry from "@/resources/theme/ThemeRegistry";
 import { PersistGate } from "redux-persist/integration/react";
 import { toast, ToastContainer } from "react-toastify";
 import { Grid } from "@mui/material";
+import menuConfig from "@/components/MenuConfig";
+import { Menu } from "@/components/Menu";
+import { usePathname } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,6 +18,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const page = usePathname();
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -23,7 +27,13 @@ export default function RootLayout({
         </div>
         <PersistGate loading={null} persistor={persistor}>
           <ReduxProvider store={store}>
-            <ThemeRegistry>{children}</ThemeRegistry>
+            <ThemeRegistry>
+              {page === "/login" ? (
+                children
+              ) : (
+                <Menu config={menuConfig} children={children} />
+              )}
+            </ThemeRegistry>
           </ReduxProvider>
         </PersistGate>
       </body>

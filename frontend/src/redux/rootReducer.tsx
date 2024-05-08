@@ -3,6 +3,7 @@ import { persistReducer } from "redux-persist";
 import theme from "./slices/theme";
 import auth from "./slices/auth";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
+import menu from "./slices/menu";
 
 const createNoopStorage = () => ({
   getItem(_key: string) {
@@ -32,19 +33,20 @@ const rootPersistConfig = {
 const themePersistConfig = {
   key: "theme",
   storage,
-  keyPrefix: "redux-",
+  keyPrefix: "theme-",
   blacklist: [],
 };
 const authPersistConfig = {
   key: "auth",
   storage,
-  keyPrefix: "redux-",
+  keyPrefix: "auth-",
   blacklist: [],
 };
 
 const rootReducer = combineReducers({
   theme: persistReducer(themePersistConfig, theme),
   auth: persistReducer(authPersistConfig, auth),
+  menu: menu,
 });
 
 export { rootPersistConfig, rootReducer };

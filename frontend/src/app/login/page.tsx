@@ -77,7 +77,7 @@ export default function LoginForm() {
         .then(async (response: any) => {
           const status = response?.status;
           dispatch(setAuth({ token: "Bearer " + response?.data?.token }));
-          router.push("/inicio");
+          router.push("/dashboard");
         })
         .catch((error: any) => {
           console.log("error", error);
