@@ -13,6 +13,7 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: false,
       immutableCheck: false,
+      thunk: true,
     }),
 });
 

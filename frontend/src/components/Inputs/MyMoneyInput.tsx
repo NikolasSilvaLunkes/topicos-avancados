@@ -83,6 +83,7 @@ const MyMoneyInput = ({
           <TextField
             id={"inputMoney_" + name}
             value={amount}
+            label={label}
             onChange={handleAmountChange}
             variant="outlined"
             inputProps={error}

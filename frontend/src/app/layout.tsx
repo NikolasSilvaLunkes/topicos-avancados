@@ -10,6 +10,8 @@ import { Grid } from "@mui/material";
 import menuConfig from "@/components/MenuConfig";
 import { Menu } from "@/components/Menu";
 import { usePathname } from "next/navigation";
+import { obterAutenticacao } from "@/resources/auth";
+import { useEffect } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,8 +27,8 @@ export default function RootLayout({
         <div>
           <ToastContainer />
         </div>
-        <PersistGate loading={null} persistor={persistor}>
-          <ReduxProvider store={store}>
+        <ReduxProvider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
             <ThemeRegistry>
               {page === "/login" ? (
                 children
@@ -34,8 +36,8 @@ export default function RootLayout({
                 <Menu config={menuConfig} children={children} />
               )}
             </ThemeRegistry>
-          </ReduxProvider>
-        </PersistGate>
+          </PersistGate>
+        </ReduxProvider>
       </body>
     </html>
   );

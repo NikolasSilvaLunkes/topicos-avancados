@@ -21,6 +21,8 @@ import { Controller, useFormContext } from "react-hook-form";
 import { dispatch, useSelector } from "@/redux/store";
 import AddOutlinedIcon from "@mui/icons-material/AddOutlined";
 import { Button } from "@mui/material";
+import { buildRequest } from "@/resources/axios/requestBuilder";
+import axiosInstance from "@/resources/axios/axiosInstance";
 
 enum EnumTipoLabel {
   labels,
@@ -38,9 +40,9 @@ export type IProps = {
   //A chave, onde será armazenado o resultado do request no reducer
   chaveCustom?: string;
   //O body da request
-  body: any;
+  body?: any;
   //Os params da request
-  params: any;
+  params?: any;
   //O tipo de request
   method: "GET" | "POST" | "PUT" | "DELETE";
   // A função que acontece ao mudar o valor do input
@@ -162,7 +164,6 @@ const MyAutocomplete = ({
   defaultBeforeOnchange,
   tipoAutocompelte = "escrever",
   textName,
-  fieldsArrobaId,
   funcaoAdicionar,
   callBack = () => {},
   ...other
@@ -175,18 +176,16 @@ const MyAutocomplete = ({
   const [isLoading, setIsLoading] = useState(false);
   const textoMinimo = tipoAutocompelte == "combo" ? 0 : 2;
 
-  const [result, setResult] = useState({ data: {} });
+  const [result, setResult] = useState<any>({ data: {} });
 
   useEffect(() => {
-    dispatch(
-      setResult({
-        data: {},
-        value: "",
-        isLoading: true,
-        error: null,
-        key: chave,
-      })
-    );
+    setResult({
+      data: {},
+      value: "",
+      isLoading: true,
+      error: null,
+      key: chave,
+    });
   }, []);
 
   useEffect(() => {
@@ -194,37 +193,33 @@ const MyAutocomplete = ({
     setIsLoading(true);
     onInputValueChange(valueTextField);
     const timer = setTimeout(() => {
-      dispatch(
-        setResult({
-          data: {},
-          value: "",
-          isLoading: true,
-          error: null,
-          key: chave,
-        })
-      );
+      setResult({
+        data: {},
+        value: "",
+        isLoading: true,
+        error: null,
+        key: chave,
+      });
       valueTextField?.length >= textoMinimo
-        ? dispatch(
-            getCustomAutocomplete(
-              chave,
-              pathApiRest,
-              method,
-              camposFiltros,
-              body,
-              () => {
-                setCarregando(false);
-                setIsLoading(false);
-              },
-              tratamento
-            )
-          )
+        ? buildRequest({
+            method: "GET",
+            path: pathApiRest,
+            params: params,
+            body: body,
+          }).then((res) => {
+            axiosInstance.request(res).then((res) => {
+              setCarregando(false);
+              setIsLoading(false);
+              return tratamento ? tratamento(res.data) : res.data;
+            });
+          })
         : "";
     }, 10);
 
     return () => clearTimeout(timer);
   }, [valueTextField, forcarMudanca]);
 
-  const resultados = useSelector((state) => state.autocomplete[chave]);
+  const resultados = result;
   autoCompleteProps.freeSolo = true;
   const [inputKey, setInputKey] = useState(Math.random().toString());
   const theme = useTheme();

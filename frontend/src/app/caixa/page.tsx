@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LoadingButton } from "@mui/lab";
 import {
+  Button,
   Card,
   CardHeader,
   Grid,
@@ -20,10 +21,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { setBearerToken } from "@/resources/axios/axios";
 import MyTextField from "@/components/Inputs/MyTextInput";
-import { buildRequest } from "@/resources/axios/requestBuilder";
+import {
+  buildRequest,
+  buildRequestAuth,
+} from "@/resources/axios/requestBuilder";
 import axiosInstance from "@/resources/axios/axiosInstance";
-import { setAuth } from "@/redux/slices/auth";
-import { dispatch } from "@/redux/store";
+import { dispatch, useSelector } from "@/redux/store";
+import MyAutocomplete from "@/components/Inputs/MyAutocomplete";
+import { Caixa, getCaixa } from "@/redux/slices/modules/caixa";
+import { getAuth, obterAutenticacao } from "@/resources/auth";
+import MyPercentInput from "@/components/Inputs/MyPercentInput";
+import MyMoneyInput from "@/components/Inputs/MyMoneyInput";
 let renders = 1;
 export default function LoginForm() {
   const router = useRouter();
@@ -33,6 +41,12 @@ export default function LoginForm() {
   const schema = z.object({});
 
   const defaultValues = {};
+
+  useEffect(() => {
+    dispatch(getCaixa());
+  }, []);
+
+  const caixa: Caixa = useSelector((state) => state.caixa.caixa);
 
   const methods = useForm<FormValuesProps>({
     resolver: zodResolver(schema),
@@ -50,7 +64,23 @@ export default function LoginForm() {
     username: string;
     password: string;
   };
-  renders++;
+  obterAutenticacao();
+  const ComponenteJuros =
+    caixa?.juros?.porcentagemValor === "PORCENTAGEM"
+      ? MyPercentInput
+      : MyMoneyInput;
+  const ComponenteMulta =
+    caixa?.multa?.porcentagemValor === "PORCENTAGEM"
+      ? MyPercentInput
+      : MyMoneyInput;
+  const ComponenteAcreascimos =
+    caixa?.juros?.porcentagemValor === "PORCENTAGEM"
+      ? MyPercentInput
+      : MyMoneyInput;
+  const ComponenteDescontos =
+    caixa?.descontos?.porcentagemValor === "PORCENTAGEM"
+      ? MyPercentInput
+      : MyMoneyInput;
   const onSubmit = async (data: FormValuesProps) => {};
   return (
     <MyFormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -58,13 +88,66 @@ export default function LoginForm() {
         container
         item
         xs={12}
+        spacing={2}
+        p={2}
         justifyContent="center"
         alignItems="center"
-        sx={{ display: "inline", float: "left" }}
       >
-        <Grid item xs={4} p={4}>
-          <MyTextField name="historico" label="historico" required />
-        </Grid>
+        {JSON.stringify(caixa)}
+        <Button
+          onClick={() => {
+            const request = buildRequestAuth({
+              method: "GET",
+              path: "usuario",
+            }).then(async (r: any) => {
+              console.log("arrrequest", r);
+              axiosInstance.request(r);
+            });
+          }}
+        >
+          Test
+        </Button>
+        {getAuth().token}
+        <MyTextField
+          gridProps={{ xs: 12 }}
+          name="historico"
+          label="historico"
+          required
+        />
+        <ComponenteMulta
+          gridProps={{ xs: 6 }}
+          name="multa"
+          label="multa"
+          required
+        />
+        <ComponenteJuros
+          gridProps={{ xs: 6 }}
+          name="juros"
+          label="juros"
+          required
+        />
+        <ComponenteDescontos
+          gridProps={{ xs: 6 }}
+          name="descontos"
+          label="descontos"
+          required
+        />
+        <ComponenteAcreascimos
+          gridProps={{ xs: 6 }}
+          name="acrescimos"
+          label="acrescimos"
+          required
+        />
+
+        {/* <MyAutocomplete
+        gridProps={{ xs: 4 }}
+        name="historico2"
+        camposFiltros={["nome"]}
+        body={{}}
+        method="GET"
+        pathApiRest=""
+        label="historico2"
+        required/> */}
       </Grid>
     </MyFormProvider>
   );
