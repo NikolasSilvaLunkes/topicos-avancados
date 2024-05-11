@@ -5,6 +5,7 @@ import auth from "./slices/auth";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 import menu from "./slices/menu";
 import caixa from "./slices/modules/caixa";
+import usuario from "./slices/modules/usuario";
 
 const createNoopStorage = () => ({
   getItem(_key: string) {
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
   auth: persistReducer(authPersistConfig, auth),
   menu: menu,
   caixa: caixa,
+  usuario: usuario,
 });
 
 export { rootPersistConfig, rootReducer };

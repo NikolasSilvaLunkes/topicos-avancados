@@ -16,9 +16,17 @@ import { useEffect } from "react";
 import { deleteLancamento, getLancamentos } from "@/redux/slices/modules/caixa";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import {
+  deleteUsuario,
+  getUsuarios,
+  setShowPassword,
+  Usuario,
+} from "@/redux/slices/modules/usuario";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 let renders = 1;
-export default function LoginForm() {
+export default function UsuarioGrid() {
   const router = useRouter();
   const theme = useTheme();
 
@@ -34,102 +42,53 @@ export default function LoginForm() {
         <>
           <IconButton
             color="primary"
-            onClick={() => router.push(`/caixa/lancamento/${params.row.id}`)}
+            onClick={() => router.push(`/usuarios/editar/${params.row.id}`)}
           >
             <EditNoteIcon />
           </IconButton>
 
           <IconButton
             color="primary"
-            onClick={() => dispatch(deleteLancamento(params.row.id))}
+            onClick={() => dispatch(deleteUsuario(params.row.id))}
           >
             <RemoveCircleIcon />
           </IconButton>
         </>
       ),
     },
+    { field: "nome", headerName: "Nome", width: 350 },
     {
-      field: "historico",
-      headerName: "Historico",
-      width: 250,
-      flex: 1,
-    },
-    {
-      field: "valor",
-      headerName: "Valor",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "valorTotal",
-
-      headerName: "total",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "data",
-      headerName: "Data",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "vencimento",
-      headerName: "Vencimento",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "baixa",
-      headerName: "Baixa",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "dc",
-      headerName: "D/C",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "juros",
-      headerName: "Juros",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "multa",
-      headerName: "Multa",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "acrescimos",
-      headerName: "Acrescimos",
-      width: 150,
-      flex: 1,
-    },
-    {
-      field: "descontos",
-      headerName: "Descontos",
-      width: 150,
-      flex: 1,
+      field: "senha",
+      headerName: "Senha",
+      width: 350,
+      renderCell: (params: any) => {
+        const showPassword = params.row.showPassword || false;
+        const index = rows.findIndex((v: Usuario) => v.id === params.id);
+        return (
+          <>
+            <IconButton
+              onClick={() => dispatch(setShowPassword([!showPassword, index]))}
+              edge="start"
+              color="primary"
+            >
+              {showPassword ? <VisibilityOffIcon /> : <RemoveRedEyeIcon />}
+            </IconButton>
+            {showPassword ? params.value : "*".repeat(8)}
+          </>
+        );
+      },
     },
   ];
 
   useEffect(() => {
-    dispatch(getLancamentos());
+    dispatch(getUsuarios());
   }, []);
 
-  const rows =
-    useSelector((state) =>
-      state.caixa.lancamentos?.map((a: any) => {
-        return { ...a, valorTotal: a.valorTotal.toFixed(2) };
-      })
-    ) || [];
+  const rows = useSelector((state) => state.usuario.usuarios) || [];
 
   obterAutenticacao();
   const auth = getAuth();
+
   return (
     <Grid
       container
@@ -167,7 +126,7 @@ export default function LoginForm() {
                     fullWidth
                     variant="contained"
                     onClick={() => {
-                      router.push("/caixa/lancamento");
+                      router.push("/usuarios/adicionar");
                     }}
                   >
                     Adicionar

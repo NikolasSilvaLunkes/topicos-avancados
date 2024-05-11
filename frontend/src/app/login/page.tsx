@@ -24,6 +24,8 @@ import { buildRequest } from "@/resources/axios/requestBuilder";
 import axiosInstance from "@/resources/axios/axiosInstance";
 import { setAuth } from "@/redux/slices/auth";
 import { dispatch } from "@/redux/store";
+import MyPasswordTextInput from "@/components/Inputs/MyPasswordTextInput";
+
 let renders = 1;
 export default function LoginForm() {
   const router = useRouter();
@@ -155,40 +157,13 @@ export default function LoginForm() {
                 autoComplete="username"
                 focused={true}
                 autoFocus={true}
-                inputProps={{
-                  style: {
-                    WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.default} inset`,
-                  },
-                }}
               />
-              <MyTextField
+              <MyPasswordTextInput
                 name="password"
                 label={"Senha"}
                 autoComplete="current-password"
                 focused={true}
                 autoFocus={true}
-                type={showPassword ? "text" : "password"}
-                inputProps={{
-                  style: {
-                    WebkitBoxShadow: `0 0 0 1000px ${theme.palette.background.default} inset`,
-                  },
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                      >
-                        <Icon
-                          icon={
-                            showPassword ? "eva:eye-fill" : "eva:eye-off-fill"
-                          }
-                        />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
               />
             </Stack>
             <Stack

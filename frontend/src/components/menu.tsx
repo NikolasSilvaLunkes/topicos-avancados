@@ -55,8 +55,8 @@ export function Menu({ children, config }: MenuProps) {
           width={open ? 200 : "60px"}
           sx={{ transition: "0.2s" }}
         >
-          {config.children.map((category: MenuItemProps) => (
-            <MenuItem {...category} />
+          {config.children.map((category: MenuItemProps, i: number) => (
+            <MenuItem {...category} key={"menuItem" + i} />
           ))}
         </Box>
       </Drawer>

@@ -21,6 +21,7 @@ export async function buildRequest({ ...data }: RequestBuildArguments) {
 export async function buildRequestAuth({
   params,
   headers,
+  body,
   ...data
 }: RequestBuildArguments) {
   const headersAuth = {
@@ -32,7 +33,7 @@ export async function buildRequestAuth({
     url: process.env.NEXT_PUBLIC_APP_URLAPI + data?.path,
     headers: { ...headersAuth, headers },
     params: { ...params },
-    data: JSON.stringify(data?.body || ""),
+    data: JSON.stringify(body || ""),
   };
   return options;
 }
@@ -53,5 +54,6 @@ export async function doRequest({
     headers,
   });
 
+  console.log("arrrrdata", options)
   return axiosInstance.request(options);
 }

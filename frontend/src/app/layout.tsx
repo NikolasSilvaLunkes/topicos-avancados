@@ -3,15 +3,9 @@ import "react-toastify/dist/ReactToastify.css";
 import { Inter } from "next/font/google";
 import { Provider as ReduxProvider } from "react-redux";
 import { store, persistor } from "@/redux/store";
-import ThemeRegistry from "@/resources/theme/ThemeRegistry";
 import { PersistGate } from "redux-persist/integration/react";
-import { toast, ToastContainer } from "react-toastify";
-import { Grid } from "@mui/material";
-import menuConfig from "@/components/MenuConfig";
-import { Menu } from "@/components/Menu";
-import { usePathname } from "next/navigation";
-import { obterAutenticacao } from "@/resources/auth";
-import { useEffect } from "react";
+import { ToastContainer } from "react-toastify";
+import OtherProviders from "./otherProviders";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +14,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const page = usePathname();
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -29,13 +22,7 @@ export default function RootLayout({
         </div>
         <ReduxProvider store={store}>
           <PersistGate loading={null} persistor={persistor}>
-            <ThemeRegistry>
-              {page === "/login" ? (
-                children
-              ) : (
-                <Menu config={menuConfig} children={children} />
-              )}
-            </ThemeRegistry>
+            <OtherProviders>{children}</OtherProviders>
           </PersistGate>
         </ReduxProvider>
       </body>

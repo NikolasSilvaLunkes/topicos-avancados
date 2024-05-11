@@ -1,10 +1,8 @@
 package com.nikolas.webservicenikolas.model;
 
 import com.nikolas.webservicenikolas.enums.PorcentagemValor;
-import com.nikolas.webservicenikolas.enums.converters.PorcentagemValorConverter;
 import com.nikolas.webservicenikolas.generic.classes.DefaultModel;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -20,6 +18,8 @@ public class ValorCaixa extends DefaultModel {
 
     private BigDecimal indice;
 
+
+    @Enumerated(EnumType.ORDINAL)
     private PorcentagemValor porcentagemValor;
     
 }

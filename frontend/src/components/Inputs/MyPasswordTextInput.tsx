@@ -7,9 +7,13 @@ import {
   Grid,
   GridProps,
   IconButton,
+  InputAdornment,
   LinearProgress,
   Tooltip,
 } from "@mui/material";
+import { useState } from "react";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 type IProps = {
   name: string;
@@ -19,7 +23,7 @@ type IProps = {
 
 export type Props = IProps & TextFieldProps;
 
-export default function MyTextField({
+export default function MyPasswordTextInput({
   name,
   label,
   gridProps,
@@ -27,6 +31,7 @@ export default function MyTextField({
 }: Props) {
   const { control } = useFormContext();
 
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <Grid item {...gridProps}>
       <Controller
@@ -47,6 +52,24 @@ export default function MyTextField({
             error={!!error}
             helperText={error?.message}
             autoComplete="nope"
+            type={showPassword ? "text" : "password"}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                    color="primary"
+                  >
+                    {showPassword ? (
+                      <VisibilityOffIcon />
+                    ) : (
+                      <RemoveRedEyeIcon />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
             {...other}
           />
         )}

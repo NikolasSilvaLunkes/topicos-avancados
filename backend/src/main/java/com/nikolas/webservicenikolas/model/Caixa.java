@@ -27,3 +27,29 @@ public class Caixa extends DefaultModel {
     @OneToOne(cascade = CascadeType.PERSIST)
     private ValorCaixa descontos;
 }
+
+
+/*
+*
+* default:
+* {
+    "dataCriacao": null,
+    "operador": null,
+    "juros": {
+        "indice": 0.03,
+        "porcentagemValor": "PORCENTAGEM"
+    },
+    "multa": {
+        "indice": 1,
+        "porcentagemValor": "PORCENTAGEM"
+    },
+    "acrescimos": {
+        "indice": 0,
+        "porcentagemValor": "VALOR"
+    },
+    "descontos": {
+        "indice": 5,
+        "porcentagemValor": "PORCENTAGEM"
+    }
+}
+* */
