@@ -64,6 +64,15 @@ export default function UsuarioForm({ params }: { params?: { id?: number } }) {
         required_error: "Senha obrigatória",
       })
       .min(8, { message: "Minimo de 8 caractéres para senha" }),
+    confirmarSenha: z
+      .string({
+        invalid_type_error: "Campo obrigatório",
+        required_error: "Campo obrigatório",
+      })
+      .min(8, { message: "Minimo de 8 caractéres para senha" })
+      .refine((v) => v === data.senha, {
+        message: "A senha e a confirmação devem coencidir",
+      }),
   });
 
   const defaultValues = {
@@ -79,10 +88,13 @@ export default function UsuarioForm({ params }: { params?: { id?: number } }) {
 
   const usuario: Usuario = useSelector((state) => state.usuario.usuario);
 
+  console.log("arrrusuarios", params?.id);
+  console.log("arrrusuario", usuario);
   useEffect(() => {
-    if (!params?.id) {
-      setValue("nome", params?.nome || "");
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (!!params?.id) {
+      setValue("nome", usuario?.nome || "");
+      setValue("senha", usuario?.senha || "");
+      setValue("confirmarSenha", usuario?.senha || "");
     }
   }, [usuario]);
 
@@ -101,6 +113,8 @@ export default function UsuarioForm({ params }: { params?: { id?: number } }) {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = methods;
+
+  const data: any = watch();
 
   obterAutenticacao();
 
@@ -144,6 +158,15 @@ export default function UsuarioForm({ params }: { params?: { id?: number } }) {
                   gridProps={{ xs: 12 }}
                   name="senha"
                   label="senha"
+                  disabled={disabled}
+                  autoComplete="new-password"
+                  required
+                />
+
+                <MyPasswordTextInput
+                  gridProps={{ xs: 12 }}
+                  name="confirmarSenha"
+                  label="confirmar senha"
                   disabled={disabled}
                   autoComplete="new-password"
                   required

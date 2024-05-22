@@ -3,6 +3,7 @@ package com.nikolas.webservicenikolas.controller;
 import com.nikolas.webservicenikolas.security.JwtAuthenticationResponse;
 import com.nikolas.webservicenikolas.security.JwtTokenProvider;
 import com.nikolas.webservicenikolas.model.Usuario;
+import com.nikolas.webservicenikolas.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +25,9 @@ public class LoginController {
     @Autowired
     JwtTokenProvider tokenProvider;
 
+    @Autowired
+    UsuarioService usuarioService;
+
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@RequestBody Usuario loginRequest) {
 
@@ -33,6 +37,16 @@ public class LoginController {
                         loginRequest.getSenha()
                 )
         );
+
+        Usuario existingUser = usuarioService.findByUsername(loginRequest.getNome());
+
+        if (existingUser == null) {
+            return ResponseEntity.badRequest().body("User not found");
+        }
+
+        if (!existingUser.getSenha().equals(loginRequest.getSenha())) {
+            return ResponseEntity.badRequest().body("Invalid password");
+        }
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

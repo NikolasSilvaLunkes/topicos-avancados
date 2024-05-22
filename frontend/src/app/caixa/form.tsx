@@ -10,6 +10,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  MenuItem,
   Stack,
   useTheme,
 } from "@mui/material";
@@ -34,11 +35,13 @@ import {
   getCaixa,
   getLancamento,
   Lancamento,
+  saveLancamento,
 } from "@/redux/slices/modules/caixa";
 import { getAuth, obterAutenticacao } from "@/resources/auth";
 import MyPercentInput from "@/components/Inputs/MyPercentInput";
 import MyMoneyInput from "@/components/Inputs/MyMoneyInput";
 import MyDatePicker from "@/components/Inputs/MyDatePicker";
+import MySelect from "@/components/Inputs/MySelect";
 let renders = 1;
 export default function CaixaForm({ params }: { params?: { id?: number } }) {
   const router = useRouter();
@@ -97,6 +100,8 @@ export default function CaixaForm({ params }: { params?: { id?: number } }) {
         acrescimos,
         data,
         vencimento,
+        debitoCredito,
+        recebimento,
       } = lancamento;
       setValue("id", id);
       setValue("historico", historico);
@@ -107,6 +112,8 @@ export default function CaixaForm({ params }: { params?: { id?: number } }) {
       setValue("acrescimos", acrescimos);
       setValue("data", new Date(data));
       setValue("vencimento", new Date(vencimento));
+      setValue("debitoCredito", debitoCredito);
+      setValue("recebimento", recebimento);
     }
   }, [lancamento]);
 
@@ -145,18 +152,13 @@ export default function CaixaForm({ params }: { params?: { id?: number } }) {
   const onSubmit = async (data: any) => {
     const d = getValues();
     console.log("data", d);
-    d.dc = "d";
     d.caixa = caixa;
-    const request = buildRequestAuth({
-      method: params?.id ? "PUT" : "POST",
-      path: "lancamento",
-      body: d,
-    })
+    dispatch(saveLancamento(d))
       .then(async (r: any) => {
-        await axiosInstance.request(r);
         toast.success("Lançamento salvo com sucesso");
+        router.push("/caixa");
       })
-      .catch((e) => {
+      .catch((e: any) => {
         toast.error("Erro ao salvar lançamento");
       });
   };
@@ -201,12 +203,22 @@ export default function CaixaForm({ params }: { params?: { id?: number } }) {
                   required
                 />
                 <MyMoneyInput
-                  gridProps={{ xs: 12 }}
+                  gridProps={{ xs: 6 }}
                   name="valor"
                   label="valor"
                   disabled={!caixa}
                   required
                 />
+                <MySelect
+                  gridProps={{ xs: 6 }}
+                  disabled={!caixa}
+                  required
+                  name="debitoCredito"
+                  label="Débito/Crédito"
+                >
+                  <MenuItem value={"D"}>Débito</MenuItem>
+                  <MenuItem value={"C"}>Crédito</MenuItem>
+                </MySelect>
                 <ComponenteMulta
                   gridProps={{ xs: 6 }}
                   name="multa"

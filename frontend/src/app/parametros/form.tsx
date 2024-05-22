@@ -60,7 +60,10 @@ function ValorCaixaComponent({
       container
       item
       xs={12}
+      md={6}
       spacing={2}
+      pl={2}
+      pr={1}
       justifyContent="center"
       alignItems="center"
     >
@@ -144,7 +147,7 @@ export default function ParametrosForm({
         alignItems="center"
         style={{ minHeight: "100vh" }}
       >
-        <Grid item xs={11} md={9} lg={6} xl={4} my={10}>
+        <Grid item xs={11} md={9} lg={8} xl={8} my={10}>
           <Card>
             <CardContent>
               <Grid
@@ -152,6 +155,9 @@ export default function ParametrosForm({
                 item
                 xs={12}
                 spacing={2}
+                mt={-1}
+                ml={-1}
+                columnSpacing={2}
                 rowSpacing={4}
                 justifyContent="center"
                 alignItems="center"

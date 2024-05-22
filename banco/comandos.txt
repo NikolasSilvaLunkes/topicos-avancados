@@ -1,0 +1,2 @@
+#backup
+pg_dump --host localhost --port 5432 --username postgres --format plain --file "dados selvos 14-05-2024" springbootdb

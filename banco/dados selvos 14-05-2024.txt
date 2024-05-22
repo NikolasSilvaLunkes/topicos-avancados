@@ -1,0 +1,1195 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.14
+-- Dumped by pg_dump version 12.14
+
+-- Started on 2024-05-14 20:19:27
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 203 (class 1259 OID 17557)
+-- Name: api_key; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.api_key (
+    data_criacao timestamp(6) without time zone,
+    id bigint NOT NULL,
+    api_key character varying(255),
+    description character varying(255)
+);
+
+
+ALTER TABLE public.api_key OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1259 OID 17555)
+-- Name: api_key_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.api_key_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_key_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2979 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: api_key_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.api_key_id_seq OWNED BY public.api_key.id;
+
+
+--
+-- TOC entry 219 (class 1259 OID 17967)
+-- Name: caixa; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.caixa (
+    id bigint NOT NULL,
+    data_criacao timestamp(6) without time zone,
+    operador bigint,
+    acrescimos bigint,
+    descontos bigint,
+    juros bigint,
+    multa bigint
+);
+
+
+ALTER TABLE public.caixa OWNER TO postgres;
+
+--
+-- TOC entry 221 (class 1259 OID 17986)
+-- Name: caixa_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.caixa_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.caixa_seq OWNER TO postgres;
+
+--
+-- TOC entry 216 (class 1259 OID 17930)
+-- Name: grupo_contas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.grupo_contas (
+    id bigint NOT NULL,
+    data_criacao timestamp(6) without time zone,
+    agrupamento character varying(255),
+    numero bigint,
+    operador bigint,
+    pai bigint,
+    descricao character varying(255),
+    tipo character(1)
+);
+
+
+ALTER TABLE public.grupo_contas OWNER TO postgres;
+
+--
+-- TOC entry 217 (class 1259 OID 17935)
+-- Name: grupo_contas_filho; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.grupo_contas_filho (
+    grupo_contas_id bigint NOT NULL,
+    filho bigint NOT NULL
+);
+
+
+ALTER TABLE public.grupo_contas_filho OWNER TO postgres;
+
+--
+-- TOC entry 218 (class 1259 OID 17942)
+-- Name: grupo_contas_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.grupo_contas_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.grupo_contas_seq OWNER TO postgres;
+
+--
+-- TOC entry 223 (class 1259 OID 18021)
+-- Name: lancamento; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.lancamento (
+    id bigint NOT NULL,
+    data_criacao timestamp(6) without time zone,
+    acrescimos numeric(38,2),
+    baixa date,
+    data date,
+    dc character(1),
+    descontos numeric(38,2),
+    historico character varying(255),
+    juros numeric(38,2),
+    multa numeric(38,2),
+    vencimento date,
+    operador bigint,
+    caixa bigint,
+    valor numeric(38,2)
+);
+
+
+ALTER TABLE public.lancamento OWNER TO postgres;
+
+--
+-- TOC entry 224 (class 1259 OID 18026)
+-- Name: lancamento_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.lancamento_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.lancamento_seq OWNER TO postgres;
+
+--
+-- TOC entry 205 (class 1259 OID 17598)
+-- Name: ocamento; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.ocamento (
+    id bigint NOT NULL,
+    data_criacao timestamp(6) without time zone,
+    pessoa bigint
+);
+
+
+ALTER TABLE public.ocamento OWNER TO postgres;
+
+--
+-- TOC entry 204 (class 1259 OID 17596)
+-- Name: ocamento_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.ocamento_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.ocamento_id_seq OWNER TO postgres;
+
+--
+-- TOC entry 2980 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: ocamento_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.ocamento_id_seq OWNED BY public.ocamento.id;
+
+
+--
+-- TOC entry 206 (class 1259 OID 17604)
+-- Name: ocamento_produtos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.ocamento_produtos (
+    ocamento_id bigint NOT NULL,
+    produtos bigint NOT NULL
+);
+
+
+ALTER TABLE public.ocamento_produtos OWNER TO postgres;
+
+--
+-- TOC entry 207 (class 1259 OID 17848)
+-- Name: orcamento; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.orcamento (
+    data_criacao timestamp(6) without time zone,
+    id bigint NOT NULL,
+    pessoa bigint,
+    base_servidor_integrado character varying(255),
+    operador bigint
+);
+
+
+ALTER TABLE public.orcamento OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 17855)
+-- Name: orcamento_produtos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.orcamento_produtos (
+    orcamento_id bigint NOT NULL,
+    produtos bigint NOT NULL
+);
+
+
+ALTER TABLE public.orcamento_produtos OWNER TO postgres;
+
+--
+-- TOC entry 212 (class 1259 OID 17902)
+-- Name: orcamento_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.orcamento_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.orcamento_seq OWNER TO postgres;
+
+--
+-- TOC entry 209 (class 1259 OID 17862)
+-- Name: pessoa; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.pessoa (
+    data_criacao timestamp(6) without time zone,
+    id bigint NOT NULL,
+    base_servidor_integrado character varying(255),
+    cpf character varying(255),
+    nome character varying(255),
+    operador bigint
+);
+
+
+ALTER TABLE public.pessoa OWNER TO postgres;
+
+--
+-- TOC entry 213 (class 1259 OID 17904)
+-- Name: pessoa_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.pessoa_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.pessoa_seq OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 17870)
+-- Name: produto; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.produto (
+    valor numeric(38,2),
+    data_criacao timestamp(6) without time zone,
+    id bigint NOT NULL,
+    base_servidor_integrado character varying(255),
+    descricao character varying(255),
+    operador bigint
+);
+
+
+ALTER TABLE public.produto OWNER TO postgres;
+
+--
+-- TOC entry 214 (class 1259 OID 17906)
+-- Name: produto_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.produto_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.produto_seq OWNER TO postgres;
+
+--
+-- TOC entry 211 (class 1259 OID 17878)
+-- Name: usuario; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.usuario (
+    data_criacao timestamp(6) without time zone,
+    id bigint NOT NULL,
+    base_servidor_integrado character varying(255),
+    nome character varying(255),
+    senha character varying(255),
+    operador bigint
+);
+
+
+ALTER TABLE public.usuario OWNER TO postgres;
+
+--
+-- TOC entry 215 (class 1259 OID 17908)
+-- Name: usuario_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.usuario_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.usuario_seq OWNER TO postgres;
+
+--
+-- TOC entry 220 (class 1259 OID 17972)
+-- Name: valor_caixa; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.valor_caixa (
+    id bigint NOT NULL,
+    data_criacao timestamp(6) without time zone,
+    indice numeric(38,2),
+    porcentagem_valor smallint,
+    operador bigint,
+    CONSTRAINT valor_caixa_porcentagem_valor_check CHECK (((porcentagem_valor >= 0) AND (porcentagem_valor <= 1)))
+);
+
+
+ALTER TABLE public.valor_caixa OWNER TO postgres;
+
+--
+-- TOC entry 222 (class 1259 OID 17988)
+-- Name: valor_caixa_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.valor_caixa_seq
+    START WITH 1
+    INCREMENT BY 50
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.valor_caixa_seq OWNER TO postgres;
+
+--
+-- TOC entry 2758 (class 2604 OID 17560)
+-- Name: api_key id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.api_key ALTER COLUMN id SET DEFAULT nextval('public.api_key_id_seq'::regclass);
+
+
+--
+-- TOC entry 2759 (class 2604 OID 17601)
+-- Name: ocamento id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ocamento ALTER COLUMN id SET DEFAULT nextval('public.ocamento_id_seq'::regclass);
+
+
+--
+-- TOC entry 2952 (class 0 OID 17557)
+-- Dependencies: 203
+-- Data for Name: api_key; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.api_key (data_criacao, id, api_key, description) FROM stdin;
+\N	1	123	master
+\.
+
+
+--
+-- TOC entry 2968 (class 0 OID 17967)
+-- Dependencies: 219
+-- Data for Name: caixa; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.caixa (id, data_criacao, operador, acrescimos, descontos, juros, multa) FROM stdin;
+252	\N	\N	502	503	504	505
+\.
+
+
+--
+-- TOC entry 2965 (class 0 OID 17930)
+-- Dependencies: 216
+-- Data for Name: grupo_contas; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.grupo_contas (id, data_criacao, agrupamento, numero, operador, pai, descricao, tipo) FROM stdin;
+1	\N	1.	1	\N	\N	Receitas	A
+2	\N	1.01	1	\N	1	Receitas Sobre Sal rios	A
+3	\N	1.01.01	1	\N	2	Salarios Recebidos	A
+4	\N	1.01.01.01	1	\N	3	Salario Empresa X	S
+5	\N	1.01.01.02	2	\N	3	Salario Empresa Y	S
+6	\N	1.01.02	2	\N	2	Recebimentos Diversos	A
+7	\N	1.01.02.01	1	\N	6	Cria‡Æo de projetos	S
+8	\N	1.01.02.02	2	\N	6	Consultoria	S
+9	\N	1.01.02.03	3	\N	6	Desenvolvimento de Sistemas	S
+10	\N	1.01.02.04	4	\N	6	Manuten‡Æo de Sistemas/Projetos	S
+11	\N	2.	2	\N	\N	Despesas	A
+12	\N	2.01	1	\N	11	Despesas Fixas	A
+13	\N	2.01.01	1	\N	12	Despesas Mensais com Empresa	A
+14	\N	2.01.01.01	1	\N	13	Agua	S
+15	\N	2.01.01.02	2	\N	13	Luz	S
+16	\N	2.01.01.03	3	\N	13	Telefone	S
+17	\N	2.01.01.04	4	\N	13	Aluguel	S
+18	\N	2.01.01.05	5	\N	13	Internet	S
+19	\N	2.01.02	2	\N	12	Despesas Mensais com Funcion rios	A
+20	\N	2.01.02.01	1	\N	19	Pagamento de Sal rios	S
+21	\N	2.01.02.02	2	\N	19	Pagamento de Terceirizados	S
+22	\N	2.01.02.03	3	\N	19	Encargos/Taxas Sociais	S
+23	\N	2.02	2	\N	11	Despesas Vari veis	A
+24	\N	2.02.01	1	\N	23	Despesas com Materiais e de Limpeza	A
+25	\N	2.02.01.01	1	\N	24	Materiais de Escrit¢rio	S
+26	\N	2.02.01.02	2	\N	24	Materiais de Limpeza	S
+27	\N	2.02.01.03	3	\N	24	Supermercado	S
+28	\N	2.02.01.03	3	\N	24	Aluguel/Loca‡Æo de salas ou equipamentos	S
+29	\N	3.	3	\N	\N	Bancos	A
+30	\N	3.01	1	\N	29	Entradas	A
+31	\N	3.01.01	1	\N	30	Dep¢sitos	A
+32	\N	3.01.01.01	1	\N	31	Dep¢sito Conta 1	S
+33	\N	3.01.01.02	2	\N	31	Dep¢sito Conta 2	S
+34	\N	3.02	2	\N	29	Sa¡das	A
+35	\N	3.02.01	1	\N	34	Saques	A
+36	\N	3.02.01.01	1	\N	35	Saques Conta 1	S
+37	\N	3.02.01.02	2	\N	35	Saques Conta 2	S
+\.
+
+
+--
+-- TOC entry 2966 (class 0 OID 17935)
+-- Dependencies: 217
+-- Data for Name: grupo_contas_filho; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.grupo_contas_filho (grupo_contas_id, filho) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2972 (class 0 OID 18021)
+-- Dependencies: 223
+-- Data for Name: lancamento; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.lancamento (id, data_criacao, acrescimos, baixa, data, dc, descontos, historico, juros, multa, vencimento, operador, caixa, valor) FROM stdin;
+1	\N	0.00	\N	2024-05-13	d	5.00	primeiro lançamento	0.03	1.00	2024-05-20	\N	252	31.23
+\.
+
+
+--
+-- TOC entry 2954 (class 0 OID 17598)
+-- Dependencies: 205
+-- Data for Name: ocamento; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.ocamento (id, data_criacao, pessoa) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2955 (class 0 OID 17604)
+-- Dependencies: 206
+-- Data for Name: ocamento_produtos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.ocamento_produtos (ocamento_id, produtos) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2956 (class 0 OID 17848)
+-- Dependencies: 207
+-- Data for Name: orcamento; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.orcamento (data_criacao, id, pessoa, base_servidor_integrado, operador) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2957 (class 0 OID 17855)
+-- Dependencies: 208
+-- Data for Name: orcamento_produtos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.orcamento_produtos (orcamento_id, produtos) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2958 (class 0 OID 17862)
+-- Dependencies: 209
+-- Data for Name: pessoa; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pessoa (data_criacao, id, base_servidor_integrado, cpf, nome, operador) FROM stdin;
+2023-10-03 19:57:04.036013	1	\N	Nikolas	Nikolas	\N
+2023-10-03 19:57:04.036013	2	\N	Nikolas	Nikolas	\N
+\N	52	\N	\N	\N	\N
+\.
+
+
+--
+-- TOC entry 2959 (class 0 OID 17870)
+-- Dependencies: 210
+-- Data for Name: produto; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.produto (valor, data_criacao, id, base_servidor_integrado, descricao, operador) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2960 (class 0 OID 17878)
+-- Dependencies: 211
+-- Data for Name: usuario; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.usuario (data_criacao, id, base_servidor_integrado, nome, senha, operador) FROM stdin;
+\N	252	\N	admin	T4TlhXvlmmU2DdR6AtwcQw==	\N
+\N	302	\N	naoAdmin	T4TlhXvlmmU2DdR6AtwcQw==	\N
+\.
+
+
+--
+-- TOC entry 2969 (class 0 OID 17972)
+-- Dependencies: 220
+-- Data for Name: valor_caixa; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.valor_caixa (id, data_criacao, indice, porcentagem_valor, operador) FROM stdin;
+1	\N	1.20	\N	\N
+2	\N	1.20	\N	\N
+3	\N	1.20	\N	\N
+4	\N	1.20	\N	\N
+52	\N	1.20	\N	\N
+53	\N	1.20	\N	\N
+54	\N	1.20	\N	\N
+55	\N	1.20	\N	\N
+102	\N	\N	\N	\N
+103	\N	\N	\N	\N
+104	\N	\N	\N	\N
+105	\N	\N	\N	\N
+152	\N	\N	\N	\N
+153	\N	\N	\N	\N
+154	\N	\N	\N	\N
+155	\N	\N	\N	\N
+156	\N	\N	\N	\N
+157	\N	\N	\N	\N
+158	\N	\N	\N	\N
+159	\N	\N	\N	\N
+202	\N	\N	\N	\N
+203	\N	\N	\N	\N
+204	\N	\N	\N	\N
+205	\N	\N	\N	\N
+206	\N	\N	\N	\N
+207	\N	\N	\N	\N
+208	\N	\N	\N	\N
+209	\N	\N	\N	\N
+210	\N	\N	\N	\N
+211	\N	\N	\N	\N
+212	\N	\N	\N	\N
+213	\N	\N	\N	\N
+214	\N	\N	\N	\N
+215	\N	\N	\N	\N
+216	\N	\N	\N	\N
+217	\N	\N	\N	\N
+218	\N	\N	\N	\N
+219	\N	\N	\N	\N
+220	\N	\N	\N	\N
+221	\N	\N	\N	\N
+252	\N	\N	\N	\N
+253	\N	\N	\N	\N
+254	\N	\N	\N	\N
+255	\N	\N	\N	\N
+256	\N	\N	\N	\N
+257	\N	\N	\N	\N
+258	\N	\N	\N	\N
+259	\N	\N	\N	\N
+260	\N	\N	\N	\N
+261	\N	\N	\N	\N
+262	\N	\N	\N	\N
+263	\N	\N	\N	\N
+352	\N	\N	\N	\N
+353	\N	\N	\N	\N
+354	\N	\N	\N	\N
+355	\N	\N	\N	\N
+356	\N	\N	\N	\N
+357	\N	\N	\N	\N
+358	\N	\N	\N	\N
+359	\N	\N	\N	\N
+360	\N	\N	\N	\N
+361	\N	\N	\N	\N
+362	\N	\N	\N	\N
+363	\N	\N	\N	\N
+364	\N	\N	\N	\N
+365	\N	\N	\N	\N
+366	\N	\N	\N	\N
+367	\N	\N	\N	\N
+368	\N	\N	\N	\N
+369	\N	\N	\N	\N
+370	\N	\N	\N	\N
+371	\N	\N	\N	\N
+372	\N	\N	\N	\N
+373	\N	\N	\N	\N
+374	\N	\N	\N	\N
+375	\N	\N	\N	\N
+376	\N	\N	\N	\N
+377	\N	\N	\N	\N
+378	\N	\N	\N	\N
+379	\N	\N	\N	\N
+402	\N	\N	\N	\N
+403	\N	\N	\N	\N
+404	\N	\N	\N	\N
+405	\N	\N	\N	\N
+406	\N	\N	\N	\N
+407	\N	\N	\N	\N
+408	\N	\N	\N	\N
+409	\N	\N	\N	\N
+410	\N	\N	\N	\N
+411	\N	\N	\N	\N
+412	\N	\N	\N	\N
+413	\N	\N	\N	\N
+414	\N	\N	\N	\N
+415	\N	\N	\N	\N
+416	\N	\N	\N	\N
+417	\N	\N	\N	\N
+418	\N	\N	\N	\N
+419	\N	\N	\N	\N
+420	\N	\N	\N	\N
+421	\N	\N	\N	\N
+422	\N	\N	\N	\N
+423	\N	\N	\N	\N
+424	\N	\N	\N	\N
+425	\N	\N	\N	\N
+426	\N	\N	\N	\N
+427	\N	\N	\N	\N
+428	\N	\N	\N	\N
+429	\N	\N	\N	\N
+430	\N	\N	\N	\N
+431	\N	\N	\N	\N
+432	\N	\N	\N	\N
+433	\N	\N	\N	\N
+452	\N	\N	\N	\N
+453	\N	\N	\N	\N
+454	\N	\N	\N	\N
+455	\N	\N	\N	\N
+552	\N	0.00	\N	\N
+553	\N	5.00	\N	\N
+554	\N	1.00	\N	\N
+555	\N	0.03	\N	\N
+504	\N	0.03	0	\N
+505	\N	1.00	0	\N
+502	\N	0.00	1	\N
+503	\N	5.00	0	\N
+\.
+
+
+--
+-- TOC entry 2981 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: api_key_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.api_key_id_seq', 1, true);
+
+
+--
+-- TOC entry 2982 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: caixa_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.caixa_seq', 351, true);
+
+
+--
+-- TOC entry 2983 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: grupo_contas_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.grupo_contas_seq', 1, false);
+
+
+--
+-- TOC entry 2984 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: lancamento_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.lancamento_seq', 1, true);
+
+
+--
+-- TOC entry 2985 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: ocamento_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.ocamento_id_seq', 1, false);
+
+
+--
+-- TOC entry 2986 (class 0 OID 0)
+-- Dependencies: 212
+-- Name: orcamento_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.orcamento_seq', 1, false);
+
+
+--
+-- TOC entry 2987 (class 0 OID 0)
+-- Dependencies: 213
+-- Name: pessoa_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.pessoa_seq', 101, true);
+
+
+--
+-- TOC entry 2988 (class 0 OID 0)
+-- Dependencies: 214
+-- Name: produto_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.produto_seq', 1, false);
+
+
+--
+-- TOC entry 2989 (class 0 OID 0)
+-- Dependencies: 215
+-- Name: usuario_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.usuario_seq', 351, true);
+
+
+--
+-- TOC entry 2990 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: valor_caixa_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.valor_caixa_seq', 601, true);
+
+
+--
+-- TOC entry 2762 (class 2606 OID 17565)
+-- Name: api_key api_key_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.api_key
+    ADD CONSTRAINT api_key_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2792 (class 2606 OID 17971)
+-- Name: caixa caixa_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT caixa_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2788 (class 2606 OID 17939)
+-- Name: grupo_contas_filho grupo_contas_filho_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.grupo_contas_filho
+    ADD CONSTRAINT grupo_contas_filho_pkey PRIMARY KEY (grupo_contas_id, filho);
+
+
+--
+-- TOC entry 2786 (class 2606 OID 17934)
+-- Name: grupo_contas grupo_contas_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.grupo_contas
+    ADD CONSTRAINT grupo_contas_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2804 (class 2606 OID 18025)
+-- Name: lancamento lancamento_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lancamento
+    ADD CONSTRAINT lancamento_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2764 (class 2606 OID 17603)
+-- Name: ocamento ocamento_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ocamento
+    ADD CONSTRAINT ocamento_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2768 (class 2606 OID 17608)
+-- Name: ocamento_produtos ocamento_produtos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ocamento_produtos
+    ADD CONSTRAINT ocamento_produtos_pkey PRIMARY KEY (ocamento_id, produtos);
+
+
+--
+-- TOC entry 2772 (class 2606 OID 17854)
+-- Name: orcamento orcamento_pessoa_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orcamento
+    ADD CONSTRAINT orcamento_pessoa_key UNIQUE (pessoa);
+
+
+--
+-- TOC entry 2774 (class 2606 OID 17852)
+-- Name: orcamento orcamento_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orcamento
+    ADD CONSTRAINT orcamento_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2776 (class 2606 OID 17859)
+-- Name: orcamento_produtos orcamento_produtos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orcamento_produtos
+    ADD CONSTRAINT orcamento_produtos_pkey PRIMARY KEY (orcamento_id, produtos);
+
+
+--
+-- TOC entry 2778 (class 2606 OID 17861)
+-- Name: orcamento_produtos orcamento_produtos_produtos_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orcamento_produtos
+    ADD CONSTRAINT orcamento_produtos_produtos_key UNIQUE (produtos);
+
+
+--
+-- TOC entry 2780 (class 2606 OID 17869)
+-- Name: pessoa pessoa_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pessoa
+    ADD CONSTRAINT pessoa_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2782 (class 2606 OID 17877)
+-- Name: produto produto_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT produto_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2766 (class 2606 OID 17610)
+-- Name: ocamento uk_39qy3gr2rct6brrfs45psgf32; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ocamento
+    ADD CONSTRAINT uk_39qy3gr2rct6brrfs45psgf32 UNIQUE (pessoa);
+
+
+--
+-- TOC entry 2770 (class 2606 OID 17612)
+-- Name: ocamento_produtos uk_5bblk8lqgs57mbigpxf3hyhod; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ocamento_produtos
+    ADD CONSTRAINT uk_5bblk8lqgs57mbigpxf3hyhod UNIQUE (produtos);
+
+
+--
+-- TOC entry 2794 (class 2606 OID 17985)
+-- Name: caixa uk_7lc13nm5gpwojslf0clm60ju7; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT uk_7lc13nm5gpwojslf0clm60ju7 UNIQUE (multa);
+
+
+--
+-- TOC entry 2796 (class 2606 OID 17983)
+-- Name: caixa uk_cp9ve4rxj882xk53rxd7784sv; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT uk_cp9ve4rxj882xk53rxd7784sv UNIQUE (juros);
+
+
+--
+-- TOC entry 2790 (class 2606 OID 17941)
+-- Name: grupo_contas_filho uk_g4sne50vc73om7utywpldhqcl; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.grupo_contas_filho
+    ADD CONSTRAINT uk_g4sne50vc73om7utywpldhqcl UNIQUE (filho);
+
+
+--
+-- TOC entry 2798 (class 2606 OID 17979)
+-- Name: caixa uk_mpvmpay5bj06m7omp51w6gxuq; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT uk_mpvmpay5bj06m7omp51w6gxuq UNIQUE (acrescimos);
+
+
+--
+-- TOC entry 2800 (class 2606 OID 17981)
+-- Name: caixa uk_rwel10wgeb7vd6jc10ocimaw2; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT uk_rwel10wgeb7vd6jc10ocimaw2 UNIQUE (descontos);
+
+
+--
+-- TOC entry 2784 (class 2606 OID 17885)
+-- Name: usuario usuario_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuario
+    ADD CONSTRAINT usuario_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2802 (class 2606 OID 17977)
+-- Name: valor_caixa valor_caixa_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.valor_caixa
+    ADD CONSTRAINT valor_caixa_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 2806 (class 2606 OID 17910)
+-- Name: orcamento fk4fmysomug6j55f3fquxhos8vc; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orcamento
+    ADD CONSTRAINT fk4fmysomug6j55f3fquxhos8vc FOREIGN KEY (operador) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2805 (class 2606 OID 17623)
+-- Name: ocamento_produtos fk4nvb9vhnhi3lyymf4dhm2enud; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.ocamento_produtos
+    ADD CONSTRAINT fk4nvb9vhnhi3lyymf4dhm2enud FOREIGN KEY (ocamento_id) REFERENCES public.ocamento(id);
+
+
+--
+-- TOC entry 2813 (class 2606 OID 17944)
+-- Name: grupo_contas fk662pq4hymbbcry16ngilltcv1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.grupo_contas
+    ADD CONSTRAINT fk662pq4hymbbcry16ngilltcv1 FOREIGN KEY (operador) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2820 (class 2606 OID 18005)
+-- Name: caixa fk77pl90vvpadll64q9k4ysxh28; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT fk77pl90vvpadll64q9k4ysxh28 FOREIGN KEY (juros) REFERENCES public.valor_caixa(id);
+
+
+--
+-- TOC entry 2823 (class 2606 OID 18028)
+-- Name: lancamento fk7bhutj5h9ddpswcg4bk3ctpuj; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lancamento
+    ADD CONSTRAINT fk7bhutj5h9ddpswcg4bk3ctpuj FOREIGN KEY (operador) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2822 (class 2606 OID 18015)
+-- Name: valor_caixa fk810v7hke5xkdex96e0k0saro9; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.valor_caixa
+    ADD CONSTRAINT fk810v7hke5xkdex96e0k0saro9 FOREIGN KEY (operador) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2807 (class 2606 OID 17886)
+-- Name: orcamento fk82b38wwcw8pxby6u2qr17ah1h; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orcamento
+    ADD CONSTRAINT fk82b38wwcw8pxby6u2qr17ah1h FOREIGN KEY (pessoa) REFERENCES public.pessoa(id);
+
+
+--
+-- TOC entry 2819 (class 2606 OID 18000)
+-- Name: caixa fk82ep2en75kx5waqen3o2vrmma; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT fk82ep2en75kx5waqen3o2vrmma FOREIGN KEY (descontos) REFERENCES public.valor_caixa(id);
+
+
+--
+-- TOC entry 2812 (class 2606 OID 17925)
+-- Name: usuario fkamf7of9y69k5h3bhie9p1y82r; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.usuario
+    ADD CONSTRAINT fkamf7of9y69k5h3bhie9p1y82r FOREIGN KEY (operador) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2816 (class 2606 OID 17959)
+-- Name: grupo_contas_filho fkblh06f13clybef5d4by16quk1; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.grupo_contas_filho
+    ADD CONSTRAINT fkblh06f13clybef5d4by16quk1 FOREIGN KEY (grupo_contas_id) REFERENCES public.grupo_contas(id);
+
+
+--
+-- TOC entry 2821 (class 2606 OID 18010)
+-- Name: caixa fkdcph3anyu91yas7gom6pnjekq; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT fkdcph3anyu91yas7gom6pnjekq FOREIGN KEY (multa) REFERENCES public.valor_caixa(id);
+
+
+--
+-- TOC entry 2810 (class 2606 OID 17915)
+-- Name: pessoa fkdlhcja0xgo6srwl1l13ig5joa; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pessoa
+    ADD CONSTRAINT fkdlhcja0xgo6srwl1l13ig5joa FOREIGN KEY (operador) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2817 (class 2606 OID 17990)
+-- Name: caixa fkfo9a2k1ep8eulmp0fmsjguv7i; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT fkfo9a2k1ep8eulmp0fmsjguv7i FOREIGN KEY (operador) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2814 (class 2606 OID 17949)
+-- Name: grupo_contas fkh28ai3wqwwrgqknuperolqwku; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.grupo_contas
+    ADD CONSTRAINT fkh28ai3wqwwrgqknuperolqwku FOREIGN KEY (pai) REFERENCES public.grupo_contas(id);
+
+
+--
+-- TOC entry 2808 (class 2606 OID 17891)
+-- Name: orcamento_produtos fkihib35t154jmjg1htxo4xy26v; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orcamento_produtos
+    ADD CONSTRAINT fkihib35t154jmjg1htxo4xy26v FOREIGN KEY (produtos) REFERENCES public.produto(id);
+
+
+--
+-- TOC entry 2811 (class 2606 OID 17920)
+-- Name: produto fkkwl5p7l135un16vxmljvlverx; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.produto
+    ADD CONSTRAINT fkkwl5p7l135un16vxmljvlverx FOREIGN KEY (operador) REFERENCES public.usuario(id);
+
+
+--
+-- TOC entry 2809 (class 2606 OID 17896)
+-- Name: orcamento_produtos fkm2rmnoij4mbog3e8k7ieynbos; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.orcamento_produtos
+    ADD CONSTRAINT fkm2rmnoij4mbog3e8k7ieynbos FOREIGN KEY (orcamento_id) REFERENCES public.orcamento(id);
+
+
+--
+-- TOC entry 2824 (class 2606 OID 18033)
+-- Name: lancamento fkma7ffqj9vox9vgkud0oxeg5h5; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.lancamento
+    ADD CONSTRAINT fkma7ffqj9vox9vgkud0oxeg5h5 FOREIGN KEY (caixa) REFERENCES public.caixa(id);
+
+
+--
+-- TOC entry 2818 (class 2606 OID 17995)
+-- Name: caixa fkn9nht0y94wgcnqfb7vs9koymx; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.caixa
+    ADD CONSTRAINT fkn9nht0y94wgcnqfb7vs9koymx FOREIGN KEY (acrescimos) REFERENCES public.valor_caixa(id);
+
+
+--
+-- TOC entry 2815 (class 2606 OID 17954)
+-- Name: grupo_contas_filho fksfnxjltt3d08soqkr7sd5etr3; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.grupo_contas_filho
+    ADD CONSTRAINT fksfnxjltt3d08soqkr7sd5etr3 FOREIGN KEY (filho) REFERENCES public.grupo_contas(id);
+
+
+-- Completed on 2024-05-14 20:19:32
+
+--
+-- PostgreSQL database dump complete
+--
+

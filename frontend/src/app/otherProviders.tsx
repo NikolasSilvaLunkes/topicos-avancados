@@ -33,12 +33,12 @@ export default function OtherProviders({
 
   console.log("menuconfigarrr", thisMenuConfig);
   return (
-    <ThemeRegistry>
+    <>
       {page === "/login" ? (
         children
       ) : (
         <Menu config={thisMenuConfig}>{children}</Menu>
       )}
-    </ThemeRegistry>
+    </>
   );
 }

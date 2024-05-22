@@ -41,10 +41,13 @@ public class Lancamento extends DefaultModel {
 
     private  LocalDate baixa;
 
-    private Character dc = 'd';
+    private Character debitoCredito = 'D';
 
     @Transient
     private BigDecimal valorTotal;
+
+    @ManyToOne
+    private GrupoContas grupoContas;
 
     public BigDecimal getValorTotal() {
         if (valor == null) {

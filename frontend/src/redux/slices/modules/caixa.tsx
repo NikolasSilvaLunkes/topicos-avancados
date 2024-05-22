@@ -5,9 +5,11 @@ import {
   createSlice,
 } from "@reduxjs/toolkit";
 import { RootState } from "@/redux/store";
-import { doRequest } from "@/resources/axios/requestBuilder";
+import { buildRequestAuth, doRequest } from "@/resources/axios/requestBuilder";
 import { set } from "date-fns";
 import { toast } from "react-toastify";
+import axiosInstance from "@/resources/axios/axiosInstance";
+import fileDownload from "js-file-download";
 
 export type valorCaixa = {
   indice: number;
@@ -34,7 +36,8 @@ export type Lancamento = {
   valor: number;
   vencimento: string;
   baixa: string;
-  dc: string;
+  debitoCredito: string;
+  recebimento: string;
 };
 
 export type CaixaSlice = {
@@ -81,6 +84,21 @@ export function getCaixa(): ThunkAction<
     }).then((response) => {
       dispatch(setCaixa(response.data[0]));
     });
+  };
+}
+
+export function saveLancamento(
+  d: Lancamento
+): ThunkAction<void, RootState, unknown, Action<string>> {
+  return async (dispatch, getState) => {
+    const r = await buildRequestAuth({
+      method: d?.id ? "PUT" : "POST",
+      path: "lancamento",
+      body: d,
+    });
+
+    const data = await axiosInstance.request(r);
+    return data;
   };
 }
 
@@ -139,5 +157,131 @@ export function saveCaixa(
     }).then((response) => {
       toast.success("Parametros salvos com sucesso");
     });
+  };
+}
+
+export function downloadPdf(): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  Action<string>
+> {
+  return async (dispatch, getState) => {
+    const request = await buildRequestAuth({
+      method: "GET",
+      path: "lancamento/report/pdf",
+    });
+    const response = await fetch(request?.url, { ...request });
+    const arrayBuffer = await response.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString("base64");
+    console.log(base64);
+    const blob = new Blob([arrayBuffer], {
+      type: response.headers.get("content-type") || undefined,
+    });
+
+    fileDownload(
+      blob,
+      "relatório.pdf",
+      response?.headers?.get("content-type") || undefined
+    );
+  };
+}
+
+export function downloadCsv(): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  Action<string>
+> {
+  return async (dispatch, getState) => {
+    const request = await buildRequestAuth({
+      method: "GET",
+      path: "lancamento/report/csv",
+    });
+    const response = await fetch(request?.url, { ...request });
+    const arrayBuffer = await response.arrayBuffer();
+    const base64 = Buffer.from(arrayBuffer).toString("base64");
+    console.log(base64);
+    const blob = new Blob([arrayBuffer], {
+      type: response.headers.get("content-type") || undefined,
+    });
+
+    fileDownload(
+      blob,
+      "relatório.csv",
+      response?.headers?.get("content-type") || undefined
+    );
+  };
+}
+
+export const getLancamentosHtml = (lancamentos: Lancamento[]): string => {
+  // Map over the lancamentos array and create an HTML table row for each Lancamento
+  const lancamentosHtml = lancamentos
+    ?.map(
+      (lancamento: Lancamento) => `
+      <tr>
+        <td>${lancamento.juros}</td>
+        <td>${lancamento.multa}</td>
+        <td>${lancamento.acrescimos}</td>
+        <td>${lancamento.descontos}</td>
+        <td>${lancamento?.historico || ""}</td>
+        <td>${lancamento?.data || ""}</td>
+        <td>${lancamento?.valor || ""}</td>
+        <td>${lancamento?.vencimento || ""}</td>
+        <td>${lancamento?.baixa || ""}</td>
+        <td>${lancamento?.debitoCredito || ""}</td>
+      </tr>
+    `
+    )
+    .join("");
+
+  // Use the lancamentosHtml string to build your HTML report
+  const html = `
+      <html>
+        <head>
+          <title>Report</title>
+        </head>
+        <body>
+          <h1>Report</h1>
+          <table>
+            <tr>
+              <th>Juros</th>
+              <th>Multa</th>
+              <th>Acrescimos</th>
+              <th>Descontos</th>
+              <th>Historico</th>
+              <th>Data</th>
+              <th>Valor</th>
+              <th>Vencimento</th>
+              <th>Baixa</th>
+              <th>DebitoCredito</th>
+            </tr>
+            ${lancamentosHtml}
+          </table>
+        </body>
+      </html>
+    `;
+
+  return html;
+};
+
+export function downloadHtml(): ThunkAction<
+  void,
+  RootState,
+  unknown,
+  Action<string>
+> {
+  return async (dispatch, getState) => {
+    const html = getLancamentosHtml(getState().caixa.lancamentos);
+
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "report.html";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 }

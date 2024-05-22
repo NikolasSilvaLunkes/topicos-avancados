@@ -14,6 +14,7 @@ import shadows, { customShadows } from "./shadows";
 import React from "react";
 import { usePathname } from "next/navigation";
 import { presetsDeCores } from "./Types/type";
+import themeDef from "./palette";
 
 // This implementation is from emotion-js
 // https://github.com/emotion-js/emotion/issues/2928#issuecomment-1319747902
@@ -24,20 +25,13 @@ export default function ThemeRegistry(props: any) {
     (state) => state.theme
   );
   const routes = {
-    noDrawerPages: [
-      "/",
-      "/login",
-      "/emailEnviado",
-      "/recuperarSenha",
-      "/definirSenha",
-      "/perfilLead",
-      "/controlweb",
-    ],
+    noDrawerPages: ["/login"],
   };
   const pathname = usePathname();
   const noDrawer = routes.noDrawerPages.includes(pathname);
 
   const theme = createTheme({
+    ...themeDef,
     palette: temaEscuro ? palette.dark : palette.light,
     shape: { borderRadius: 8 },
     shadows: !temaEscuro

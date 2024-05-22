@@ -26,7 +26,6 @@ export async function buildRequestAuth({
 }: RequestBuildArguments) {
   const headersAuth = {
     Authorization: `${getAuth()?.token}`,
-    "Content-Type": "application/json",
   };
   const options = {
     method: data.method,
@@ -54,6 +53,6 @@ export async function doRequest({
     headers,
   });
 
-  console.log("arrrrdata", options)
+  console.log("arrrrdata", options);
   return axiosInstance.request(options);
 }

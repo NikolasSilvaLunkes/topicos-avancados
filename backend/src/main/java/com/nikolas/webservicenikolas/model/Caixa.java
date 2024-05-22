@@ -16,7 +16,7 @@ import lombok.*;
 public class Caixa extends DefaultModel {
 
     @OneToOne(cascade = CascadeType.PERSIST)
-    private ValorCaixa juros;
+        private ValorCaixa juros;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     private ValorCaixa multa;
