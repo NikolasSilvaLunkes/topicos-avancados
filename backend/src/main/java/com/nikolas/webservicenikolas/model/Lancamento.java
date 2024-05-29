@@ -1,5 +1,6 @@
 package com.nikolas.webservicenikolas.model;
 
+import com.nikolas.webservicenikolas.enums.PorcentagemValor;
 import com.nikolas.webservicenikolas.generic.classes.DefaultModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -7,6 +8,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Getter
 @Setter
@@ -53,18 +55,48 @@ public class Lancamento extends DefaultModel {
         if (valor == null) {
             return BigDecimal.ZERO;
         }
-        BigDecimal jurosValue = (juros != null) ? juros.divide(BigDecimal.valueOf(100)) : BigDecimal.ZERO;
-        BigDecimal multaValue = (multa != null) ? multa.divide(BigDecimal.valueOf(100)) : BigDecimal.ZERO;
-        BigDecimal descontosValue = (descontos != null) ? descontos.divide(BigDecimal.valueOf(100)) : BigDecimal.ZERO;
+
+        PorcentagemValor tipoMulta = caixa.getMulta().getPorcentagemValor();
+        PorcentagemValor tipoJuros = caixa.getJuros().getPorcentagemValor();
+        PorcentagemValor tipoAcrescimos = caixa.getAcrescimos().getPorcentagemValor();
+        PorcentagemValor tipoDescontos = caixa.getDescontos().getPorcentagemValor();
 
         BigDecimal total = valor;
-        total = total.add(total.multiply(jurosValue));
-        total = total.subtract(total.multiply(descontosValue));
+        if (baixa != null && baixa.isAfter(vencimento) || baixa == null && LocalDate.now().isAfter(vencimento)) {
+            if (tipoMulta == PorcentagemValor.PORCENTAGEM) {
+                total = total.add(total.multiply(multa.divide(BigDecimal.valueOf(100))));
+            } else {
+                total = total.add(multa);
+            }
 
-        if (baixa != null && baixa.isAfter(vencimento)) {
-            total = total.add(total.multiply(multaValue));
-        } else if (baixa == null && LocalDate.now().isAfter(vencimento)) {
-            total = total.add(total.multiply(multaValue));
+
+
+        }
+
+        long daysBetween = 0;
+        if (data != null && baixa != null) {
+            daysBetween = ChronoUnit.DAYS.between(data, baixa);
+        }
+
+        if (tipoJuros == PorcentagemValor.PORCENTAGEM) {
+            BigDecimal jurosPerDay = juros.divide(BigDecimal.valueOf(100));
+            BigDecimal totalJuros = jurosPerDay.multiply(BigDecimal.valueOf(daysBetween));
+            total = total.add(total.multiply(totalJuros));
+        } else {
+            BigDecimal totalJuros = juros.multiply(BigDecimal.valueOf(daysBetween));
+            total = total.add(totalJuros);
+        }
+
+        if (tipoAcrescimos == PorcentagemValor.PORCENTAGEM) {
+            total = total.add(total.multiply(acrescimos.divide(BigDecimal.valueOf(100))));
+        } else {
+            total = total.add(acrescimos);
+        }
+
+        if (tipoDescontos == PorcentagemValor.PORCENTAGEM) {
+            total = total.subtract(total.multiply(descontos.divide(BigDecimal.valueOf(100))));
+        } else {
+            total = total.subtract(descontos);
         }
 
         return total;

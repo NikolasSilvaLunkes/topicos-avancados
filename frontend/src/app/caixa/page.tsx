@@ -12,8 +12,8 @@ import {
 import { useRouter } from "next/navigation";
 import { dispatch, useSelector } from "@/redux/store";
 import { getAuth, obterAutenticacao } from "@/resources/auth";
-import { DataGrid } from "@mui/x-data-grid";
-import { useEffect } from "react";
+import { DataGrid, GridFilterItem, GridFilterModel } from "@mui/x-data-grid";
+import { useEffect, useRef, useState } from "react";
 import {
   Lancamento,
   deleteLancamento,
@@ -31,6 +31,7 @@ import { DataGridPro } from "@mui/x-data-grid-pro";
 import { ptBR } from "@mui/x-data-grid/locales";
 import { toast } from "react-toastify";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import { GridApiCommunity } from "@mui/x-data-grid/internals";
 
 let renders = 1;
 export default function LoginForm() {
@@ -174,6 +175,29 @@ export default function LoginForm() {
 
   obterAutenticacao();
   const auth = getAuth();
+
+  const apiRef = useRef<GridApiCommunity>();
+
+  const [filterModel, setFilterModel] = useState<GridFilterModel>({
+    items: [],
+  });
+
+  const [rowsFiltered, setRowsFiltered] = useState<any[]>(rows);
+
+  const handleFilterChange = (model: GridFilterModel) => {
+    setFilterModel(model);
+    const filteredRows = applyFilters(rows, model.items);
+    setRowsFiltered(filteredRows);
+  };
+
+  const applyFilters = (rows: any[], filters: GridFilterItem[]) => {
+    // Implement your filtering logic here
+    // For example, if you're filtering a 'name' column for 'contains' type filter:
+    return rows.filter((row) =>
+      filters.every((filter) => row[filter.field].includes(filter.value))
+    );
+  };
+
   return (
     <Grid
       container
@@ -198,10 +222,12 @@ export default function LoginForm() {
                 rows={rows}
                 columns={columns}
                 filterMode="client"
+                filterModel={filterModel}
+                onFilterModelChange={handleFilterChange}
                 initialState={{
                   pagination: {
                     paginationModel: {
-                      pageSize: 20,
+                      pageSize: 8,
                     },
                   },
                   columns: {
@@ -227,7 +253,7 @@ export default function LoginForm() {
                     fullWidth
                     variant="contained"
                     onClick={() => {
-                      dispatch(downloadPdf());
+                      dispatch(downloadPdf(rowsFiltered));
                     }}
                   >
                     Pdf
@@ -238,7 +264,7 @@ export default function LoginForm() {
                     fullWidth
                     variant="contained"
                     onClick={() => {
-                      dispatch(downloadCsv());
+                      dispatch(downloadCsv(rowsFiltered));
                     }}
                   >
                     Csv
@@ -249,7 +275,7 @@ export default function LoginForm() {
                     fullWidth
                     variant="contained"
                     onClick={() => {
-                      dispatch(downloadHtml());
+                      dispatch(downloadHtml(rowsFiltered));
                     }}
                   >
                     Html

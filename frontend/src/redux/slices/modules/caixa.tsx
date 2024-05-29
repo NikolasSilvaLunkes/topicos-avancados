@@ -160,18 +160,23 @@ export function saveCaixa(
   };
 }
 
-export function downloadPdf(): ThunkAction<
-  void,
-  RootState,
-  unknown,
-  Action<string>
-> {
+export function downloadPdf(
+  rows: any
+): ThunkAction<void, RootState, unknown, Action<string>> {
   return async (dispatch, getState) => {
     const request = await buildRequestAuth({
-      method: "GET",
+      method: "POST",
       path: "lancamento/report/pdf",
+      body: JSON.stringify(rows),
     });
-    const response = await fetch(request?.url, { ...request });
+    const response = await fetch(request?.url, {
+      ...request,
+      body: JSON.stringify(rows),
+      headers: {
+        ...request.headers,
+        "Content-Type": "application/json",
+      },
+    });
     const arrayBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString("base64");
     console.log(base64);
@@ -187,18 +192,23 @@ export function downloadPdf(): ThunkAction<
   };
 }
 
-export function downloadCsv(): ThunkAction<
-  void,
-  RootState,
-  unknown,
-  Action<string>
-> {
+export function downloadCsv(
+  rows: any
+): ThunkAction<void, RootState, unknown, Action<string>> {
   return async (dispatch, getState) => {
     const request = await buildRequestAuth({
-      method: "GET",
+      method: "POST",
       path: "lancamento/report/csv",
+      body: rows,
     });
-    const response = await fetch(request?.url, { ...request });
+    const response = await fetch(request?.url, {
+      ...request,
+      body: JSON.stringify(rows),
+      headers: {
+        ...request.headers,
+        "Content-Type": "application/json",
+      },
+    });
     const arrayBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(arrayBuffer).toString("base64");
     console.log(base64);
@@ -215,7 +225,6 @@ export function downloadCsv(): ThunkAction<
 }
 
 export const getLancamentosHtml = (lancamentos: Lancamento[]): string => {
-  // Map over the lancamentos array and create an HTML table row for each Lancamento
   const lancamentosHtml = lancamentos
     ?.map(
       (lancamento: Lancamento) => `
@@ -235,14 +244,14 @@ export const getLancamentosHtml = (lancamentos: Lancamento[]): string => {
     )
     .join("");
 
-  // Use the lancamentosHtml string to build your HTML report
   const html = `
       <html>
         <head>
-          <title>Report</title>
+          <title>Relatório</title>
+          <meta charset="UTF-8">
         </head>
         <body>
-          <h1>Report</h1>
+          <h1>Relatório</h1>
           <table>
             <tr>
               <th>Juros</th>
@@ -265,14 +274,11 @@ export const getLancamentosHtml = (lancamentos: Lancamento[]): string => {
   return html;
 };
 
-export function downloadHtml(): ThunkAction<
-  void,
-  RootState,
-  unknown,
-  Action<string>
-> {
+export function downloadHtml(
+  rows: any
+): ThunkAction<void, RootState, unknown, Action<string>> {
   return async (dispatch, getState) => {
-    const html = getLancamentosHtml(getState().caixa.lancamentos);
+    const html = getLancamentosHtml(rows);
 
     const blob = new Blob([html], { type: "text/html" });
     const url = URL.createObjectURL(blob);

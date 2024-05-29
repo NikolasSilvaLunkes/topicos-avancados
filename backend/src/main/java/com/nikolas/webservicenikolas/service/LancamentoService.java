@@ -25,9 +25,9 @@ import java.io.ByteArrayOutputStream;
 @Service
 public class LancamentoService extends DefaultService<Lancamento, ILancamentoRepository> {
 
-    public byte[] generatePdfReport() {
-        Iterable<Lancamento> lancamentosIterable = getRepository().findAll();
-        List<Lancamento> lancamentos = StreamSupport.stream(lancamentosIterable.spliterator(), false).collect(Collectors.toList());
+    public byte[] generatePdfReport(List<Lancamento> lancamentos) {
+//        Iterable<Lancamento> lancamentosIterable = getRepository().findAll();
+//        List<Lancamento> lancamentos = StreamSupport.stream(lancamentosIterable.spliterator(), false).collect(Collectors.toList());
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -102,9 +102,9 @@ public class LancamentoService extends DefaultService<Lancamento, ILancamentoRep
 //        }
 //    }
 
-    public byte[] generateCsvReport() throws IOException {
-        Iterable<Lancamento> lancamentosIterable = getRepository().findAll();
-        List<Lancamento> lancamentos = StreamSupport.stream(lancamentosIterable.spliterator(), false).collect(Collectors.toList());
+    public byte[] generateCsvReport(List<Lancamento> lancamentos) throws IOException {
+//        Iterable<Lancamento> lancamentosIterable = getRepository().findAll();
+//        List<Lancamento> lancamentos = StreamSupport.stream(lancamentosIterable.spliterator(), false).collect(Collectors.toList());
 
         StringWriter writer = new StringWriter();
         CSVWriter csvWriter = new CSVWriter(writer);

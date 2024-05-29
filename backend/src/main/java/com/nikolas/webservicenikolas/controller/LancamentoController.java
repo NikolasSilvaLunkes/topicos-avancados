@@ -5,12 +5,11 @@ import com.nikolas.webservicenikolas.model.Lancamento;
 import com.nikolas.webservicenikolas.repository.ILancamentoRepository;
 import com.nikolas.webservicenikolas.service.LancamentoService;
 import org.springframework.http.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
+import java.util.List;
 
 
 @RestController
@@ -20,9 +19,9 @@ public class LancamentoController extends DefaultController<Lancamento, ILancame
         super(service);
     }
 
-    @GetMapping("/report/pdf")
-    public ResponseEntity<byte[]> generatePdfReport() {
-        byte[] contents = service.generatePdfReport();
+    @PostMapping("/report/pdf")
+    public ResponseEntity<byte[]> generatePdfReport(@RequestBody List<Lancamento> lancamentos) {
+        byte[] contents = service.generatePdfReport(lancamentos);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_PDF);
@@ -33,18 +32,9 @@ public class LancamentoController extends DefaultController<Lancamento, ILancame
         return response;
     }
 
-//    @GetMapping("/report/xml")
-//    public ResponseEntity<String> generateXmlReport() {
-//        String xml = service.generateXmlReport();
-//        if (xml == null) {
-//            return ResponseEntity.internalServerError().build();
-//        }
-//        return ResponseEntity.ok().contentType(MediaType.APPLICATION_XML).body(xml);
-//    }
-
-    @GetMapping("/report/csv")
-    public ResponseEntity<byte[]> generateCsvReport() throws IOException {
-        byte[] contents = service.generateCsvReport();
+    @PostMapping("/report/csv")
+    public ResponseEntity<byte[]> generateCsvReport(@RequestBody List<Lancamento> lancamentos) throws IOException {
+        byte[] contents = service.generateCsvReport(lancamentos);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.parseMediaType("text/csv"));

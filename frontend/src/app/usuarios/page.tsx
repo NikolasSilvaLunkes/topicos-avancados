@@ -46,13 +46,14 @@ export default function UsuarioGrid() {
           >
             <EditNoteIcon />
           </IconButton>
-
-          <IconButton
-            color="primary"
-            onClick={() => dispatch(deleteUsuario(params.row.id))}
-          >
-            <RemoveCircleIcon />
-          </IconButton>
+          {params?.row?.nome !== "admin" && (
+            <IconButton
+              color="primary"
+              onClick={() => dispatch(deleteUsuario(params.row.id))}
+            >
+              <RemoveCircleIcon />
+            </IconButton>
+          )}
         </>
       ),
     },

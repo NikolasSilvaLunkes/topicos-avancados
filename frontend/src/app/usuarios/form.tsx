@@ -92,6 +92,7 @@ export default function UsuarioForm({ params }: { params?: { id?: number } }) {
   console.log("arrrusuario", usuario);
   useEffect(() => {
     if (!!params?.id) {
+      setValue("id", usuario?.id || "");
       setValue("nome", usuario?.nome || "");
       setValue("senha", usuario?.senha || "");
       setValue("confirmarSenha", usuario?.senha || "");
